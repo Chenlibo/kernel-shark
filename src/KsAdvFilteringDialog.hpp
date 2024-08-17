@@ -89,9 +89,9 @@ private:
 	kshark_data_stream *_getCurrentStream(kshark_context *kshark_ctx);
 
 private slots:
-	void _systemChanged(int);
+	void _systemChanged(const QString&);
 
-	void _eventChanged(int);
+	void _eventChanged(const QString&);
 };
 
 #endif // _KS_ADV_FILTERING_DIALOG_H

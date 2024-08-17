@@ -197,8 +197,8 @@ KsComboPlotDialog::KsComboPlotDialog(QWidget *parent)
 	 * Using the old Signal-Slot syntax because QComboBox::currentIndexChanged
 	 * has overloads.
 	 */
-	connect(&_guestStreamComboBox,	&QComboBox::currentIndexChanged,
-		this,			&KsComboPlotDialog::_guestStreamChanged);
+	connect(&_guestStreamComboBox,	SIGNAL(currentIndexChanged(const QString &)),
+		this,			SLOT(_guestStreamChanged(const QString &)));
 
 	setLayout(&_topLayout);
 
@@ -335,9 +335,8 @@ void KsComboPlotDialog::_setCurrentPlots(int sdGuest)
 	_vcpuTree.set(vcpuCBs);
 }
 
-void KsComboPlotDialog::_guestStreamChanged(int)
+void KsComboPlotDialog::_guestStreamChanged(const QString &sdStr)
 {
-	QString sdStr = _guestStreamComboBox.currentText();
 	if (sdStr.isEmpty())
 		return;
 

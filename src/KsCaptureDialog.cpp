@@ -492,8 +492,9 @@ void KsCaptureMonitor::connectMe(QProcess *proc, KsCaptureControl *ctrl)
 	connect(proc,	&QProcess::started,
 		this,	&KsCaptureMonitor::_captureStarted);
 
-	connect(proc,	&QProcess::finished,
-		this,	&KsCaptureMonitor::_captureFinished);
+	/* Using the old Signal-Slot syntax because QProcess::finished has overloads. */
+	connect(proc,	SIGNAL(finished(int, QProcess::ExitStatus)),
+		this,	SLOT(_captureFinished(int, QProcess::ExitStatus)));
 
 	connect(proc,	&QProcess::readyReadStandardError,
 		this,	&KsCaptureMonitor::_printAllStandardError);

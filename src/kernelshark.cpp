@@ -55,6 +55,7 @@ int main(int argc, char **argv)
 	QString taskList;
 	int c;
 
+	QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 	QApplication::setDesktopFileName(KS_APP_NAME);
 	QApplication a(argc, argv);
 

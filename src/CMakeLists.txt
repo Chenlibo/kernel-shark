@@ -77,7 +77,7 @@ if (OPENGL_FOUND)
 
 endif (OPENGL_FOUND)
 
-if (Qt6Widgets_FOUND AND TT_FONT_FILE)
+if (Qt5Widgets_FOUND AND Qt5Network_FOUND AND TT_FONT_FILE)
 
     message(STATUS "libkshark-gui")
     set (ks-guiLib_hdr  KsUtils.hpp
@@ -93,7 +93,7 @@ if (Qt6Widgets_FOUND AND TT_FONT_FILE)
                         KsQuickContextMenu.hpp
                         KsAdvFilteringDialog.hpp)
 
-    QT6_WRAP_CPP(ks-guiLib_hdr_moc ${ks-guiLib_hdr})
+    QT5_WRAP_CPP(ks-guiLib_hdr_moc ${ks-guiLib_hdr})
 
     add_library(kshark-gui  SHARED  ${ks-guiLib_hdr_moc}    KsUtils.cpp
                                                             KsModels.cpp
@@ -111,10 +111,8 @@ if (Qt6Widgets_FOUND AND TT_FONT_FILE)
                                                             KsAdvFilteringDialog.cpp)
 
     target_link_libraries(kshark-gui kshark-plot
-                                     Qt6::Widgets
-                                     Qt6::Network
-                                     Qt6::OpenGLWidgets
-                                     Qt6::StateMachine)
+                                     Qt5::Widgets
+                                     Qt5::Network)
 
 
     set_target_properties(kshark-gui PROPERTIES  SUFFIX ".so.${KS_VERSION_STRING}")
@@ -159,4 +157,4 @@ if (Qt6Widgets_FOUND AND TT_FONT_FILE)
 
     find_program(DO_AS_ROOT pkexec)
 
-endif ()
+endif (Qt5Widgets_FOUND AND Qt5Network_FOUND AND TT_FONT_FILE)

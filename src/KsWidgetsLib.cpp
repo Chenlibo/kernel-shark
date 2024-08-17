@@ -253,13 +253,13 @@ KsTimeOffsetDialog::KsTimeOffsetDialog(QWidget *parent) : QDialog(parent)
 	connect(&_input,	&QDialog::rejected,
 		this,		&QWidget::close);
 
-	connect(&_streamCombo,	&QComboBox::currentIndexChanged,
-		this,		&KsTimeOffsetDialog::_setDefault);
+	connect(&_streamCombo,	SIGNAL(currentIndexChanged(int)),
+		SLOT(_setDefault(int)));
 
 	show();
 }
 
-void KsTimeOffsetDialog::_setDefault(int) {
+void KsTimeOffsetDialog::_setDefault(int index) {
 	int sd = _streamCombo.currentData().toInt();
 	kshark_context *kshark_ctx(nullptr);
 	struct kshark_data_stream *stream;
@@ -1174,7 +1174,7 @@ KsPluginCheckBoxWidget::KsPluginCheckBoxWidget(int sd, QStringList pluginList,
 	_id.resize(nPlgins);
 
 	for (int i = 0; i < nPlgins; ++i) {
-		if (pluginList[i].size() < 30) {
+		if (pluginList[i] < 30) {
 			nameItem = new QTableWidgetItem(pluginList[i]);
 		} else {
 			QLabel l;
@@ -1257,7 +1257,7 @@ KsDStreamCheckBoxWidget::KsDStreamCheckBoxWidget(QWidget *parent)
 	for (int i = 0; i < nStreams; ++i) {
 		stream = kshark_ctx->stream[streamIds[i]];
 		QString name = KsUtils::streamDescription(stream);
-		if (name.size() < 40) {
+		if (name < 40) {
 			nameItem = new QTableWidgetItem(name);
 		} else {
 			QLabel l;
@@ -1303,8 +1303,8 @@ KsEventFieldSelectWidget::KsEventFieldSelectWidget(QWidget *parent)
 	 * Using the old Signal-Slot syntax because QComboBox::currentIndexChanged
 	 * has overloads.
 	 */
-	connect(&_streamComboBox,	&QComboBox::currentIndexChanged,
-		this,			&KsEventFieldSelectWidget::_streamChanged);
+	connect(&_streamComboBox,	SIGNAL(currentIndexChanged(const QString&)),
+		this,			SLOT(_streamChanged(const QString&)));
 
 	lamAddLine();
 
@@ -1318,8 +1318,8 @@ KsEventFieldSelectWidget::KsEventFieldSelectWidget(QWidget *parent)
 	 * Using the old Signal-Slot syntax because QComboBox::currentIndexChanged
 	 * has overloads.
 	 */
-	connect(&_eventComboBox,	&QComboBox::currentIndexChanged,
-		this,			&KsEventFieldSelectWidget::_eventChanged);
+	connect(&_eventComboBox,	SIGNAL(currentIndexChanged(const QString&)),
+		this,			SLOT(_eventChanged(const QString&)));
 
 	lamAddLine();
 
@@ -1349,7 +1349,7 @@ void KsEventFieldSelectWidget::setStreamCombo()
 	}
 }
 
-void KsEventFieldSelectWidget::_streamChanged(int)
+void KsEventFieldSelectWidget::_streamChanged(const QString &streamFile)
 {
 	int sd = _streamComboBox.currentData().toInt();
 	QVector<int> eventIds = KsUtils::getEventIdList(sd);
@@ -1364,11 +1364,10 @@ void KsEventFieldSelectWidget::_streamChanged(int)
 	_eventComboBox.addItems(evtsList);
 }
 
-void KsEventFieldSelectWidget::_eventChanged(int)
+void KsEventFieldSelectWidget::_eventChanged(const QString &eventName)
 {
 	int sd = _streamComboBox.currentData().toInt();
-	QString evtName = _eventComboBox.currentText();
-	int eventId = KsUtils::getEventId(sd, evtName);
+	int eventId = KsUtils::getEventId(sd, eventName);
 	QStringList fieldsList = KsUtils::getEventFieldsList(sd, eventId);
 
 	auto lamIsValide = [&] (const QString &f) {
